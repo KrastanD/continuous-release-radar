@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 )
@@ -16,7 +17,7 @@ func authFunc() {
 
 	var auth = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate, spotifyauth.ScopePlaylistModifyPrivate, spotifyauth.ScopePlaylistModifyPublic))
 	var ch = make(chan *spotify.Client)
-	var state = "abc123"
+	var state = uuid.New().String()
 
 	var fullCompleteAuth = handleAuthRedirect(auth, state, ch)
 
