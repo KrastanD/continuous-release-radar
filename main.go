@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/zmb3/spotify/v2"
 )
 
 func init() {
@@ -15,7 +16,9 @@ func init() {
 
 func main() {
 	_, exists := os.LookupEnv("SPOTIFY_ID")
+	var client *spotify.Client
 	if exists {
-		authFunc()
+		client = authFunc()
 	}
+	addTracksToContinuousPlaylist(client)
 }
