@@ -1,6 +1,6 @@
 # Continuous Release Radar
 
-A go service that moves tracks from user's Release Radar to a long term playlist (named Continuous Release Radar by default).
+A go service that moves songs from user's Release Radar to a long term playlist (named Continuous Release Radar by default) on Spotify.
 
 I have provided a cronjob script that automates the process and runs the script every week on Tuesday at noon. 
 
