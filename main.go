@@ -18,7 +18,13 @@ func main() {
 	_, exists := os.LookupEnv("SPOTIFY_ID")
 	var client *spotify.Client
 	if exists {
-		client = authFunc()
+		data, err := os.ReadFile("token.txt")
+		if err != nil {
+			client = getExternalAuth()
+		} else {
+			client = getTokenFromLocalStorage(data)
+		}
 	}
 	addTracksToContinuousPlaylist(client)
+	log.Print("Success!")
 }

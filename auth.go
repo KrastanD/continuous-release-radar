@@ -1,16 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/google/uuid"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
+	"golang.org/x/oauth2"
 )
 
-func authFunc() *spotify.Client {
+func getExternalAuth() *spotify.Client {
 	const redirectURI = "http://localhost:8080/callback"
 
 	var auth = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate, spotifyauth.ScopePlaylistModifyPrivate, spotifyauth.ScopePlaylistModifyPublic))
@@ -48,9 +51,22 @@ func handleAuthRedirect(auth *spotifyauth.Authenticator, state string, ch chan *
 			log.Fatalf("State mismatch: %s != %s\n", st, state)
 		}
 
+		saveTokenToFile(tok)
+
 		// use the token to get an authenticated client
 		client := spotify.New(auth.Client(r.Context(), tok))
 		fmt.Fprintf(w, "Login Completed!")
 		ch <- client
+	}
+}
+
+func saveTokenToFile(tok *oauth2.Token) {
+	marshaledToken, marshallingErr := json.Marshal(tok)
+	if marshallingErr != nil {
+		log.Print(marshallingErr)
+	}
+	writeErr := os.WriteFile("token.txt", marshaledToken, 0644)
+	if writeErr != nil {
+		log.Print(writeErr)
 	}
 }
