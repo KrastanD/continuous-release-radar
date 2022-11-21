@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/zmb3/spotify/v2"
@@ -10,21 +9,13 @@ import (
 
 func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
+		log.Fatal("No .env file found")
 	}
+	checkForEnvVars()
 }
 
 func main() {
-	_, exists := os.LookupEnv("SPOTIFY_ID")
-	var client *spotify.Client
-	if exists {
-		data, err := os.ReadFile("token.txt")
-		if err != nil {
-			client = getExternalAuth()
-		} else {
-			client = getTokenFromLocalStorage(data)
-		}
-	}
+	var client *spotify.Client = getAuthClient()
 	addTracksToContinuousPlaylist(client)
 	log.Print("Success!")
 }
