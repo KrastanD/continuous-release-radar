@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/zmb3/spotify/v2"
@@ -32,7 +33,14 @@ func getExternalAuth() *spotify.Client {
 	}()
 
 	url := auth.AuthURL(state)
-	fmt.Println("Please log in to Spotify by visiting the following page in your browser:", url)
+	_, doesNTFYTopicExist := os.LookupEnv("NTFY_TOPIC")
+	if !doesNTFYTopicExist {
+		fmt.Println("Please log in to Spotify by visiting the following page in your browser:", url)
+	} else {
+		ntfy_topic := os.Getenv("NTFY_TOPIC")
+		http.Post("https://ntfy.sh/"+ntfy_topic, "text/plain",
+			strings.NewReader("Please log in to Spotify by visiting the following page in your browser:\n"+url))
+	}
 
 	// wait for auth to complete
 	client := <-ch
