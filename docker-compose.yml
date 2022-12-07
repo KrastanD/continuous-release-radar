@@ -1,0 +1,7 @@
+services:
+  continuous-release-radar:
+    image: krastand/continuous-release-radar
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    command: tail -f /dev/null

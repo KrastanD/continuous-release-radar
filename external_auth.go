@@ -15,7 +15,8 @@ import (
 )
 
 func getExternalAuth() *spotify.Client {
-	const redirectURI = "http://localhost:8080/callback"
+	//TODO: get url from env
+	const redirectURI = "https://continuousreleaseradar.krastan.com/callback"
 
 	var auth = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate, spotifyauth.ScopePlaylistModifyPrivate, spotifyauth.ScopePlaylistModifyPublic))
 	var ch = make(chan *spotify.Client)
